@@ -1,0 +1,71 @@
+integrations:
+  agent:
+    enabled: true
+    relabel_configs:
+    - action: replace
+      source_labels:
+      - agent_hostname
+      target_label: instance
+    metric_relabel_configs:
+    - action: keep
+      regex: (prometheus_target_.*|prometheus_sd_discovered_targets|agent_build.*|agent_wal_samples_appended_total|process_start_time_seconds)
+      source_labels:
+      - __name__
+  node_exporter:
+    enabled: true
+    relabel_configs:
+    - replacement: ratos
+      target_label: instance
+    - replacement: integrations/raspberrypi-node
+      target_label: job
+  prometheus_remote_write:
+  - basic_auth:
+      password: XXX
+      username: 111
+    url: https://prometheus-prod-24-prod-eu-west-2.grafana.net/api/prom/push
+logs:
+  configs:
+  - clients:
+    - basic_auth:
+        password: XXX
+        username: 111
+      url: https://logs-prod-012.grafana.net/loki/api/v1/push
+    name: integrations
+    positions:
+      filename: /tmp/positions.yaml
+    scrape_configs:
+    - job_name: integrations/node_exporter_journal_scrape
+      journal:
+        max_age: 24h
+        labels:
+          instance: ratos
+          job: integrations/raspberrypi-node
+      relabel_configs:
+      - source_labels: ['__journal__systemd_unit']
+        target_label: 'unit'
+      - source_labels: ['__journal__boot_id']
+        target_label: 'boot_id'
+      - source_labels: ['__journal__transport']
+        target_label: 'transport'
+      - source_labels: ['__journal_priority_keyword']
+        target_label: 'level'
+    - job_name: integrations/node_exporter_direct_scrape
+      static_configs:
+      - targets:
+        - localhost
+        labels:
+          instance: ratos
+          __path__: /var/log/{syslog,messages,*.log}
+          job: integrations/raspberrypi-node
+metrics:
+  configs:
+  - name: integrations
+    remote_write:
+    - basic_auth:
+        password: XXX
+        username: 111
+      url: https://prometheus-prod-24-prod-eu-west-2.grafana.net/api/prom/push
+    scrape_configs:
+  global:
+    scrape_interval: 60s
+  wal_directory: /tmp/grafana-agent-wal

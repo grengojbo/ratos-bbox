@@ -18,6 +18,8 @@ RatOS - SAVE_GCODE_STATE
   - screws_tilt_state
   - STATE_G32
   - probe_calibrate
+  - attach_probe_state
+  - detach_probe_state
 
 Klipper State ?
 
@@ -43,4 +45,11 @@ Ecample set state:
 SAVE_GCODE_STATE name=probe_calibrate
 STOW_PROBE
 RESTORE_GCODE_STATE name=probe_calibrate MOVE=1 MOVE_SPEED={RatOS.macro_travel_speed|float}
+```
+
+Change Wi-Fi:
+  
+```
+cat /etc/wpa_supplicant/wpa_supplicant.conf
+cat /boot/ratos-wpa-supplicant.txt
 ```
