@@ -7,7 +7,7 @@ fi
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 source /home/pi/printer_data/config/RatOS/scripts/ratos-common.sh
-source /home/pi/printer_data/config/RatOS/scripts/moonraker-ensure-policykit-rules.sh
+# source /home/pi/printer_data/config/RatOS/scripts/moonraker-ensure-policykit-rules.sh
 
 # update_symlinks()
 # {
